@@ -11,7 +11,7 @@
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"injun Seo","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"기본 요청\n@RequestMapping123456789@Slf4j@RestControllerpublic class MappingController &#123;    @RequestMapping(&#123;&quot;/hello-basic&quot;, &quot;/hello&quot;&#125;)    public String helloBasic() &#123;        log.info(&quot;hello-Basic&quot;);        return &quot;ok&quot;;    &#125;\n“/hello-basic” 또는 “/hello” url 호출 시, 해당 메서드가 실행되도록 매핑해준다.\nHttp 메서드를 모두 허용해준다. GET, POST, PUT 등\n\nHTTP 메서드 매핑\n특정 HTTP 메서드 요청만 허용해준다.12345@GetMapping(&quot;/mapping-get&quot;)public String mappingGet() &#123;log.info(&quot;mappingGet&quot;);    return &quot;ok&quot;;&#125;\n@PostMapping, @PutMapping 등\n\n경로 변수 사용\n@PathVariable\n12345@GetMapping(&quot;/mapping/&#123;userId&#125;&quot;)public String mappingPath(@PathVariable(&quot;userId&quot;) String data) &#123;log.info(&quot;mappingPath userId=&#123;&#125;&quot;, data);    return &quot;ok&quot;;&#125;\n특정 parameter 조건 매핑\n\nparams=”mode=debug”,\n\npramas = “!mode”\n\n\n\n\n123456@GetMapping(value = &quot;/mapping-param&quot;, params = &quot;mode=debug&quot;)public String mappingParam() &#123;log.info(&quot;mappingParam&quot;);    return &quot;ok&quot;;&#125;/* params에 &quot;mode=debug&quot; 포함되어야 요청을 받아들인다.\n\n그 밖의 조건들\n특정 헤더 조건 매핑: header=”..”\n미디어타입 조건 매핑: consumes=”..”, produces=”..”\n\n\n\nReference\n김영한(2021-03-21), Spring MVC 1편, Ch6 S13 ~ S14\n\n","dateCreated":"2021-07-14T15:09:37+09:00","dateModified":"2021-07-19T16:06:15+09:00","datePublished":"2021-07-14T15:09:37+09:00","description":"","headline":"[spring MVC] @RequestMapping","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2021/07/14/[spring%20MVC]%20@RequestMapping/"},"publisher":{"@type":"Organization","name":"injun Seo","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://example.com/2021/07/14/[spring%20MVC]%20@RequestMapping/"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"injun Seo","sameAs":["https://github.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"기본 요청\n@RequestMapping123456789@Slf4j@RestControllerpublic class MappingController &#123;    @RequestMapping(&#123;&quot;/hello-basic&quot;, &quot;/hello&quot;&#125;)    public String helloBasic() &#123;        log.info(&quot;hello-Basic&quot;);        return &quot;ok&quot;;    &#125;\n“/hello-basic” 또는 “/hello” url 호출 시, 해당 메서드가 실행되도록 매핑해준다.\nHttp 메서드를 모두 허용해준다. GET, POST, PUT 등\n\nHTTP 메서드 매핑\n특정 HTTP 메서드 요청만 허용해준다.12345@GetMapping(&quot;/mapping-get&quot;)public String mappingGet() &#123;log.info(&quot;mappingGet&quot;);    return &quot;ok&quot;;&#125;\n@PostMapping, @PutMapping 등\n\n경로 변수 사용\n@PathVariable\n12345@GetMapping(&quot;/mapping/&#123;userId&#125;&quot;)public String mappingPath(@PathVariable(&quot;userId&quot;) String data) &#123;log.info(&quot;mappingPath userId=&#123;&#125;&quot;, data);    return &quot;ok&quot;;&#125;\n특정 parameter 조건 매핑\n\nparams=”mode=debug”,\n\npramas = “!mode”\n\n\n\n\n123456@GetMapping(value = &quot;/mapping-param&quot;, params = &quot;mode=debug&quot;)public String mappingParam() &#123;log.info(&quot;mappingParam&quot;);    return &quot;ok&quot;;&#125;/* params에 &quot;mode=debug&quot; 포함되어야 요청을 받아들인다.\n\n그 밖의 조건들\n특정 헤더 조건 매핑: header=”..”\n미디어타입 조건 매핑: consumes=”..”, produces=”..”\n\n\n\nReference\n김영한(2021-03-21), Spring MVC 1편, Ch6 S13 ~ S14\n\n","dateCreated":"2021-07-14T15:09:37+09:00","dateModified":"2021-07-19T16:06:15+09:00","datePublished":"2021-07-14T15:09:37+09:00","description":"","headline":"[spring MVC] @RequestMapping","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2021/07/14/[spring%20MVC]%20@RequestMapping/"},"publisher":{"@type":"Organization","name":"injun Seo","sameAs":["https://github.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://example.com/2021/07/14/[spring%20MVC]%20@RequestMapping/"}</script>
     <meta name="description" content="기본 요청 @RequestMapping123456789@Slf4j@RestControllerpublic class MappingController &amp;#123;    @RequestMapping(&amp;#123;&quot;&#x2F;hello-basic&quot;, &quot;&#x2F;hello&quot;&amp;#125;)    public String helloBasic() &amp;#12">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="[spring MVC] @RequestMapping">
@@ -52,7 +52,7 @@
 
     
 
-<header id="header" data-behavior="4">
+<header id="header" data-behavior="5">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
         <a
@@ -79,7 +79,7 @@
             <!-- Define author's picture -->
 
 
-<nav id="sidebar" data-behavior="4">
+<nav id="sidebar" data-behavior="5">
     <div class="sidebar-container">
         
         
@@ -193,54 +193,6 @@
                     
                         <a
                             class="sidebar-button-link "
-                            href="http://stackoverflow.com/users"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Stack Overflow"
-                        >
-                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Stack Overflow</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://twitter.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Twitter"
-                        >
-                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Twitter</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://facebook.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Facebook"
-                        >
-                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Facebook</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
                             href="https://plus.google.com/"
                             
                                 target="_blank"
@@ -307,7 +259,7 @@
 </nav>
 
             
-            <div id="main" data-behavior="4"
+            <div id="main" data-behavior="5"
                  class="
                         hasCoverMetaIn
                         ">
@@ -492,7 +444,7 @@
 
             </div>
             
-                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
                     <div class="post-actions-wrap">
     <nav>
         <ul class="post-actions post-action-nav">
@@ -592,7 +544,7 @@
 
                 </div>
                 
-    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+    <div id="share-options-bar" class="share-options-bar" data-behavior="5">
         <i id="btn-close-shareoptions" class="fa fa-times"></i>
         <ul class="share-options">
             
