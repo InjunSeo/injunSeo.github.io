@@ -269,6 +269,93 @@
                     
                         <a
                             class="link-unstyled"
+                            href="/2021/07/21/spring-MVC-Validation/"
+                            aria-label=": [spring MVC] Validation"
+                        >
+                            [spring MVC] Validation
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time datetime="2021-07-21T13:59:46+09:00">
+	
+		    Jul 21, 2021
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/spring/">spring</a>, <a class="category-link" href="/categories/spring/spring-MVC/">spring MVC</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content">
+                    <h1 id="Validation"><a href="#Validation" class="headerlink" title="Validation"></a>Validation</h1><ul>
+<li>user가 회원가입이나 상품 등록을 할 때, 적절하지 않는 데이터를 입력하는 것을 막아야 한다.<ol>
+<li>필수 입력 정보에 Null일때</li>
+<li>typeMismatch</li>
+<li>비즈니스 요구사항에 맞지 않을 때: 최소 금액 </li>
+</ol>
+</li>
+<li>검증의 종류<ol>
+<li>BindingResult</li>
+<li>validator</li>
+<li>@valid</li>
+</ol>
+</li>
+</ul>
+<h1 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h1><ul>
+<li>item 클래스<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Item</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line">    <span class="keyword">private</span> String itemName;</span><br><span class="line">    <span class="keyword">private</span> Integer price;</span><br><span class="line">    <span class="keyword">private</span> Integer quantity;</span><br></pre></td></tr></table></figure></li>
+<li>Controller에서 직접 errors를 만든다.<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">addItemV7</span><span class="params">(Item item, RedirectAttributes redirectAttributes)</span> </span>&#123;</span><br><span class="line">       Map&lt;String, String&gt; errors = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">       <span class="comment">//검증 로직</span></span><br><span class="line">       log.info(<span class="string">&quot;itemName= &#123;&#125;&quot;</span>, item.getItemName());</span><br><span class="line"></span><br><span class="line">       <span class="keyword">if</span>(item.getItemName() == <span class="keyword">null</span>)&#123;</span><br><span class="line">           errors.put(<span class="string">&quot;itemName&quot;</span>, <span class="string">&quot;상품 이름은 필수입니다.&quot;</span>);</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="comment">//검증 실패시 </span></span><br><span class="line">       <span class="keyword">if</span> (!errors.isEmpty()) &#123;</span><br><span class="line">           log.info(<span class="string">&quot;errors = &#123;&#125;&quot;</span>, errors);</span><br><span class="line">           <span class="keyword">return</span> <span class="string">&quot;basic/addForm&quot;</span>;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       Item savedItem = itemRepository.save(item);</span><br><span class="line">       redirectAttributes.addAttribute(<span class="string">&quot;itemId&quot;</span>, savedItem.getId());</span><br><span class="line">       redirectAttributes.addAttribute(<span class="string">&quot;status&quot;</span>, <span class="keyword">true</span>);</span><br><span class="line">       <span class="keyword">return</span> <span class="string">&quot;redirect:/basic/items/&#123;itemId&#125;&quot;</span>;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>검증에 실패하면 errors에 error message를 담아서, 반환한다.<br>그런데 typeMismatch 시, validation.BindException에 따라 위 컨트롤러로 오기도 전에 400 에러 페이지를 응답한다.</p>
+</blockquote>
+</li>
+</ul>
+<h1 id="BindingResult"><a href="#BindingResult" class="headerlink" title="BindingResult"></a>BindingResult</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PostMapping(&quot;/add&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">addItemV8</span><span class="params">(Item item, BindingResult bindingResult,</span></span></span><br><span class="line"><span class="params"><span class="function">                        RedirectAttributes redirectAttributes, Model model)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!StringUtils.hasText(item.getItemName())) &#123;</span><br><span class="line">        bindingResult.addError(<span class="keyword">new</span> FieldError(<span class="string">&quot;item&quot;</span>, <span class="string">&quot;itemName&quot;</span>, <span class="string">&quot;item Name&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (item.getPrice() == <span class="keyword">null</span> || item.getPrice() &lt; <span class="number">1000</span>) &#123;</span><br><span class="line">        bindingResult.addError(<span class="keyword">new</span> FieldError(<span class="string">&quot;item&quot;</span>, <span class="string">&quot;itemPrice&quot;</span>, <span class="string">&quot;가격은 최소 1000원&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (item.getQuantity() == <span class="keyword">null</span> || item.getQuantity() &gt;= <span class="number">9999</span>) &#123;</span><br><span class="line">        bindingResult.addError(<span class="keyword">new</span> FieldError(<span class="string">&quot;item&quot;</span>, <span class="string">&quot;quantity&quot;</span>, <span class="string">&quot;수량은 최대 9999개입니다.&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (item.getPrice() != <span class="keyword">null</span> &amp;&amp; item.getQuantity() != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">int</span> resultPrice = item.getPrice() * item.getQuantity();</span><br><span class="line">        <span class="keyword">if</span> (resultPrice &lt; <span class="number">10000</span>) &#123;</span><br><span class="line">            bindingResult.addError(<span class="keyword">new</span> ObjectError(<span class="string">&quot;item&quot;</span>, <span class="string">&quot;총액(가격*수량)의 합은 10000원 이상이어야 합니다.&quot;</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (bindingResult.hasErrors()) &#123;</span><br><span class="line">        log.info(<span class="string">&quot;errors= &#123;&#125;&quot;</span>, bindingResult);</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;basic/addForm&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    log.info(<span class="string">&quot;itemName= &#123;&#125;&quot;</span>, item.getItemName());</span><br><span class="line"></span><br><span class="line">    Item savedItem = itemRepository.save(item);</span><br><span class="line">    redirectAttributes.addAttribute(<span class="string">&quot;itemId&quot;</span>, savedItem.getId());</span><br><span class="line">    redirectAttributes.addAttribute(<span class="string">&quot;status&quot;</span>, <span class="keyword">true</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;redirect:/basic/items/&#123;itemId&#125;&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>error는 두 가지인데, fieldError와 ObjectError이다. </p>
+</blockquote>
+<ul>
+<li>오류 메시지를 보여줄 때, 사용자가 입력한 데이터는 사라진다.</li>
+<li>입력해야 할 코드가 많다.</li>
+</ul>
+
+                    
+                        
+
+
+                    
+                    
+                        <p>
+                            <a
+                                href="/2021/07/21/spring-MVC-Validation/#post-footer"
+                                class="postShorten-excerpt_link link"
+                                aria-label=""
+                            >
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title">
+                    
+                        <a
+                            class="link-unstyled"
                             href="/2021/07/20/Git-reset/"
                             aria-label=": Git reset"
                         >
