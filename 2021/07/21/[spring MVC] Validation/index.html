@@ -11,11 +11,11 @@
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"injun Seo","sameAs":["https://github.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"Validation\nuser가 회원가입이나 상품 등록을 할 때, 적절하지 않는 데이터를 입력하는 것을 막아야 한다.\n필수 입력 정보에 Null일때\ntypeMismatch\n비즈니스 요구사항에 맞지 않을 때: 최소 금액 \n\n\n검증의 종류\nBindingResult\nvalidator\n@valid\n\n\n\nMap\nitem 클래스123456@Datapublic class Item &#123;    private Long id;    private String itemName;    private Integer price;    private Integer quantity;\nController에서 직접 errors를 만든다.12345678910111213141516171819public String addItemV7(Item item, RedirectAttributes redirectAttributes) &#123;       Map&lt;String, String&gt; errors = new HashMap&lt;&gt;();       //검증 로직       log.info(&quot;itemName= &#123;&#125;&quot;, item.getItemName());       if(item.getItemName() == null)&#123;           errors.put(&quot;itemName&quot;, &quot;상품 이름은 필수입니다.&quot;);       &#125;       //검증 실패시        if (!errors.isEmpty()) &#123;           log.info(&quot;errors = &#123;&#125;&quot;, errors);           return &quot;basic/addForm&quot;;       &#125;       Item savedItem = itemRepository.save(item);       redirectAttributes.addAttribute(&quot;itemId&quot;, savedItem.getId());       redirectAttributes.addAttribute(&quot;status&quot;, true);       return &quot;redirect:/basic/items/&#123;itemId&#125;&quot;;\n\n검증에 실패하면 errors에 error message를 담아서, 반환한다.그런데 typeMismatch 시, validation.BindException에 따라 위 컨트롤러로 오기도 전에 400 에러 페이지를 응답한다.\n\n\n\nBindingResult123456789101112131415161718192021222324252627282930@PostMapping(&quot;/add&quot;)public String addItemV8(Item item, BindingResult bindingResult,                        RedirectAttributes redirectAttributes, Model model) &#123;    if (!StringUtils.hasText(item.getItemName())) &#123;        bindingResult.addError(new FieldError(&quot;item&quot;, &quot;itemName&quot;, &quot;item Name&quot;));    &#125;    if (item.getPrice() == null || item.getPrice() &lt; 1000) &#123;        bindingResult.addError(new FieldError(&quot;item&quot;, &quot;itemPrice&quot;, &quot;가격은 최소 1000원&quot;));    &#125;    if (item.getQuantity() == null || item.getQuantity() &gt;= 9999) &#123;        bindingResult.addError(new FieldError(&quot;item&quot;, &quot;quantity&quot;, &quot;수량은 최대 9999개입니다.&quot;));    &#125;    if (item.getPrice() != null &amp;&amp; item.getQuantity() != null) &#123;        int resultPrice = item.getPrice() * item.getQuantity();        if (resultPrice &lt; 10000) &#123;            bindingResult.addError(new ObjectError(&quot;item&quot;, &quot;총액(가격*수량)의 합은 10000원 이상이어야 합니다.&quot;));        &#125;    &#125;    if (bindingResult.hasErrors()) &#123;        log.info(&quot;errors= &#123;&#125;&quot;, bindingResult);        return &quot;basic/addForm&quot;;    &#125;    log.info(&quot;itemName= &#123;&#125;&quot;, item.getItemName());    Item savedItem = itemRepository.save(item);    redirectAttributes.addAttribute(&quot;itemId&quot;, savedItem.getId());    redirectAttributes.addAttribute(&quot;status&quot;, true);    return &quot;redirect:/basic/items/&#123;itemId&#125;&quot;;&#125;\n\nerror는 두 가지인데, fieldError와 ObjectError이다. \n\n\n오류 메시지를 보여줄 때, 사용자가 입력한 데이터는 사라진다.\n입력해야 할 코드가 많다.\n\n@Valid\nclass1234567891011@Datapublic class User &#123;    private Integer id;    @NotEmpty    private String account;    @NotEmpty    private String password;&#125;\n컨트롤러에서 @Valid12345678910111213141516@Slf4j@Controllerpublic class LoginController &#123;    @PostMapping(&quot;/user/login&quot;)    public ResponseEntity&lt;String&gt; validlogin(@RequestBody @Valid User user, BindingResult bindingResult) &#123;        if (bindingResult.hasErrors()) &#123;            List&lt;ObjectError&gt; allErrors = bindingResult.getAllErrors();            for (ObjectError error : allErrors) &#123;                System.out.println(error.getDefaultMessage());            &#125;        &#125;        log.info(&quot;[User] id= &#123;&#125;, account= &#123;&#125;, pw= &#123;&#125;&quot;, user.getId(), user.getAccount(), user.getPassword());        return new ResponseEntity&lt;&gt;(&quot;Ok&quot;, HttpStatus.OK);    &#125;&#125;\n\n검증 실패 시, error message 출력한다.\n\n\n\nValidated\n원하는 속성만 유효성 검사를 하고자 할때\n12345678public class ValidationGroups &#123;    public interface group1 &#123;    &#125;;    public interface group2 &#123;    &#125;&#125;\n1234567891011@Datapublic class User &#123;    private Integer id;    @NotEmpty(groups = &#123;ValidationGroups.group1.class&#125;)    private String account;    @NotEmpty(groups = &#123;ValidationGroups.group2.class&#125;)    private String password;&#125;\n@Validated(..) 괄호 안에 설정을 추가한다.\n123456789101112@PostMapping(&quot;/user/login2&quot;)public ResponseEntity&lt;String&gt; validatedLogin(@RequestBody @Validated(ValidationGroups.group1.class)                                             User user, BindingResult bindingResult) &#123;    if (bindingResult.hasErrors()) &#123;        List&lt;ObjectError&gt; allErrors = bindingResult.getAllErrors();        for (ObjectError error : allErrors) &#123;            System.out.println(error.getDefaultMessage());        &#125;    &#125;    log.info(&quot;[User] id= &#123;&#125;, account= &#123;&#125;, pw= &#123;&#125;&quot;, user.getId(), user.getAccount(), user.getPassword());    return new ResponseEntity&lt;&gt;(&quot;Ok&quot;, HttpStatus.OK);&#125;\n\ngroup1에 해당하는 속성만 검증한다. 위 경우, account가 group1에 속하기 때문에, account만을 검증한다. 다른 속성들에 null이 들어가도, error message가 출력되지 않는다.\n\n\n\n","dateCreated":"2021-07-21T13:59:46+09:00","dateModified":"2021-07-21T17:04:49+09:00","datePublished":"2021-07-21T13:59:46+09:00","description":"","headline":"[spring MVC] Validation","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2021/07/21/spring-MVC-Validation/"},"publisher":{"@type":"Organization","name":"injun Seo","sameAs":["https://github.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://example.com/2021/07/21/spring-MVC-Validation/","keywords":"spring"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"injun Seo","sameAs":["https://github.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"Validation\nuser가 회원가입이나 상품 등록을 할 때, 적절하지 않는 데이터를 입력하는 것을 막아야 한다.\n필수 입력 정보에 Null일때\ntypeMismatch\n비즈니스 요구사항에 맞지 않을 때: 최소 금액 \n\n\n검증의 종류\nBindingResult\nvalidator\n@valid\n\n\n\nMap\nitem 클래스123456@Datapublic class Item &#123;    private Long id;    private String itemName;    private Integer price;    private Integer quantity;\nController에서 직접 errors를 만든다.12345678910111213141516171819public String addItemV7(Item item, RedirectAttributes redirectAttributes) &#123;       Map&lt;String, String&gt; errors = new HashMap&lt;&gt;();       //검증 로직       log.info(&quot;itemName= &#123;&#125;&quot;, item.getItemName());       if(item.getItemName() == null)&#123;           errors.put(&quot;itemName&quot;, &quot;상품 이름은 필수입니다.&quot;);       &#125;       //검증 실패시        if (!errors.isEmpty()) &#123;           log.info(&quot;errors = &#123;&#125;&quot;, errors);           return &quot;basic/addForm&quot;;       &#125;       Item savedItem = itemRepository.save(item);       redirectAttributes.addAttribute(&quot;itemId&quot;, savedItem.getId());       redirectAttributes.addAttribute(&quot;status&quot;, true);       return &quot;redirect:/basic/items/&#123;itemId&#125;&quot;;\n\n검증에 실패하면 errors에 error message를 담아서, 반환한다.그런데 typeMismatch 시, validation.BindException에 따라 위 컨트롤러로 오기도 전에 400 에러 페이지를 응답한다.\n\n\n\nBindingResult123456789101112131415161718192021222324252627282930@PostMapping(&quot;/add&quot;)public String addItemV8(Item item, BindingResult bindingResult,                        RedirectAttributes redirectAttributes, Model model) &#123;    if (!StringUtils.hasText(item.getItemName())) &#123;        bindingResult.addError(new FieldError(&quot;item&quot;, &quot;itemName&quot;, &quot;item Name&quot;));    &#125;    if (item.getPrice() == null || item.getPrice() &lt; 1000) &#123;        bindingResult.addError(new FieldError(&quot;item&quot;, &quot;itemPrice&quot;, &quot;가격은 최소 1000원&quot;));    &#125;    if (item.getQuantity() == null || item.getQuantity() &gt;= 9999) &#123;        bindingResult.addError(new FieldError(&quot;item&quot;, &quot;quantity&quot;, &quot;수량은 최대 9999개입니다.&quot;));    &#125;    if (item.getPrice() != null &amp;&amp; item.getQuantity() != null) &#123;        int resultPrice = item.getPrice() * item.getQuantity();        if (resultPrice &lt; 10000) &#123;            bindingResult.addError(new ObjectError(&quot;item&quot;, &quot;총액(가격*수량)의 합은 10000원 이상이어야 합니다.&quot;));        &#125;    &#125;    if (bindingResult.hasErrors()) &#123;        log.info(&quot;errors= &#123;&#125;&quot;, bindingResult);        return &quot;basic/addForm&quot;;    &#125;    log.info(&quot;itemName= &#123;&#125;&quot;, item.getItemName());    Item savedItem = itemRepository.save(item);    redirectAttributes.addAttribute(&quot;itemId&quot;, savedItem.getId());    redirectAttributes.addAttribute(&quot;status&quot;, true);    return &quot;redirect:/basic/items/&#123;itemId&#125;&quot;;&#125;\n\nerror는 두 가지인데, fieldError와 ObjectError이다. \n\n\n오류 메시지를 보여줄 때, 사용자가 입력한 데이터는 사라진다.\n입력해야 할 코드가 많다.\n\n@Valid\nclass1234567891011@Datapublic class User &#123;    private Integer id;    @NotEmpty    private String account;    @NotEmpty    private String password;&#125;\n컨트롤러에서 @Valid12345678910111213141516@Slf4j@Controllerpublic class LoginController &#123;    @PostMapping(&quot;/user/login&quot;)    public ResponseEntity&lt;String&gt; validlogin(@RequestBody @Valid User user, BindingResult bindingResult) &#123;        if (bindingResult.hasErrors()) &#123;            List&lt;ObjectError&gt; allErrors = bindingResult.getAllErrors();            for (ObjectError error : allErrors) &#123;                System.out.println(error.getDefaultMessage());            &#125;        &#125;        log.info(&quot;[User] id= &#123;&#125;, account= &#123;&#125;, pw= &#123;&#125;&quot;, user.getId(), user.getAccount(), user.getPassword());        return new ResponseEntity&lt;&gt;(&quot;Ok&quot;, HttpStatus.OK);    &#125;&#125;\n\n검증 실패 시, error message 출력한다.\n\n\n\nValidated\n원하는 속성만 유효성 검사를 하고자 할때\n12345678public class ValidationGroups &#123;    public interface group1 &#123;    &#125;;    public interface group2 &#123;    &#125;&#125;\n1234567891011@Datapublic class User &#123;    private Integer id;    @NotEmpty(groups = &#123;ValidationGroups.group1.class&#125;)    private String account;    @NotEmpty(groups = &#123;ValidationGroups.group2.class&#125;)    private String password;&#125;\n@Validated(..) 괄호 안에 설정을 추가한다.\n123456789101112@PostMapping(&quot;/user/login2&quot;)public ResponseEntity&lt;String&gt; validatedLogin(@RequestBody @Validated(ValidationGroups.group1.class)                                             User user, BindingResult bindingResult) &#123;    if (bindingResult.hasErrors()) &#123;        List&lt;ObjectError&gt; allErrors = bindingResult.getAllErrors();        for (ObjectError error : allErrors) &#123;            System.out.println(error.getDefaultMessage());        &#125;    &#125;    log.info(&quot;[User] id= &#123;&#125;, account= &#123;&#125;, pw= &#123;&#125;&quot;, user.getId(), user.getAccount(), user.getPassword());    return new ResponseEntity&lt;&gt;(&quot;Ok&quot;, HttpStatus.OK);&#125;\n\ngroup1에 해당하는 속성만 검증한다. 위 경우, account가 group1에 속하기 때문에, account만을 검증한다. 다른 속성들에 null이 들어가도, error message가 출력되지 않는다.\n\n\n\n","dateCreated":"2021-07-21T13:59:46+09:00","dateModified":"2021-07-21T17:04:49+09:00","datePublished":"2021-07-21T13:59:46+09:00","description":"","headline":"[spring MVC] Validation","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2021/07/21/[spring%20MVC]%20Validation/"},"publisher":{"@type":"Organization","name":"injun Seo","sameAs":["https://github.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://example.com/2021/07/21/[spring%20MVC]%20Validation/","keywords":"spring"}</script>
     <meta name="description" content="Validation user가 회원가입이나 상품 등록을 할 때, 적절하지 않는 데이터를 입력하는 것을 막아야 한다. 필수 입력 정보에 Null일때 typeMismatch 비즈니스 요구사항에 맞지 않을 때: 최소 금액    검증의 종류 BindingResult validator @valid    Map item 클래스123456@Datapublic class">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="[spring MVC] Validation">
-<meta property="og:url" content="http://example.com/2021/07/21/spring-MVC-Validation/index.html">
+<meta property="og:url" content="http://example.com/2021/07/21/[spring%20MVC]%20Validation/index.html">
 <meta property="og:site_name" content="Tech blog">
 <meta property="og:description" content="Validation user가 회원가입이나 상품 등록을 할 때, 적절하지 않는 데이터를 입력하는 것을 막아야 한다. 필수 입력 정보에 Null일때 typeMismatch 비즈니스 요구사항에 맞지 않을 때: 최소 금액    검증의 종류 BindingResult validator @valid    Map item 클래스123456@Datapublic class">
 <meta property="og:locale" content="en_US">
@@ -369,9 +369,9 @@
                     
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
-                    href="/2021/07/27/session/"
-                    data-tooltip="[spring MVC] session"
-                    aria-label="PREVIOUS: [spring MVC] session"
+                    href="/2021/07/27/%5Bspring%20MVC%5D%20@Session/"
+                    data-tooltip="[spring MVC] Session"
+                    aria-label="PREVIOUS: [spring MVC] Session"
                 >
                     
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
@@ -410,7 +410,7 @@
             <li class="post-action hide-xs">
                 <a
                     class="post-action-btn btn btn--default"
-                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://example.com/2021/07/21/spring-MVC-Validation/"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://example.com/2021/07/21/[spring%20MVC]%20Validation/"
                     title="Share on Facebook"
                     aria-label="Share on Facebook"
                 >
@@ -423,7 +423,7 @@
             <li class="post-action hide-xs">
                 <a
                     class="post-action-btn btn btn--default"
-                    target="new" href="https://twitter.com/intent/tweet?text=http://example.com/2021/07/21/spring-MVC-Validation/"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://example.com/2021/07/21/[spring%20MVC]%20Validation/"
                     title="Share on Twitter"
                     aria-label="Share on Twitter"
                 >
@@ -436,7 +436,7 @@
             <li class="post-action hide-xs">
                 <a
                     class="post-action-btn btn btn--default"
-                    target="new" href="https://plus.google.com/share?url=http://example.com/2021/07/21/spring-MVC-Validation/"
+                    target="new" href="https://plus.google.com/share?url=http://example.com/2021/07/21/[spring%20MVC]%20Validation/"
                     title="Share on Google+"
                     aria-label="Share on Google+"
                 >
@@ -484,9 +484,9 @@
                     
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
-                    href="/2021/07/27/session/"
-                    data-tooltip="[spring MVC] session"
-                    aria-label="PREVIOUS: [spring MVC] session"
+                    href="/2021/07/27/%5Bspring%20MVC%5D%20@Session/"
+                    data-tooltip="[spring MVC] Session"
+                    aria-label="PREVIOUS: [spring MVC] Session"
                 >
                     
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
@@ -525,7 +525,7 @@
             <li class="post-action hide-xs">
                 <a
                     class="post-action-btn btn btn--default"
-                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://example.com/2021/07/21/spring-MVC-Validation/"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://example.com/2021/07/21/[spring%20MVC]%20Validation/"
                     title="Share on Facebook"
                     aria-label="Share on Facebook"
                 >
@@ -538,7 +538,7 @@
             <li class="post-action hide-xs">
                 <a
                     class="post-action-btn btn btn--default"
-                    target="new" href="https://twitter.com/intent/tweet?text=http://example.com/2021/07/21/spring-MVC-Validation/"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://example.com/2021/07/21/[spring%20MVC]%20Validation/"
                     title="Share on Twitter"
                     aria-label="Share on Twitter"
                 >
@@ -551,7 +551,7 @@
             <li class="post-action hide-xs">
                 <a
                     class="post-action-btn btn btn--default"
-                    target="new" href="https://plus.google.com/share?url=http://example.com/2021/07/21/spring-MVC-Validation/"
+                    target="new" href="https://plus.google.com/share?url=http://example.com/2021/07/21/[spring%20MVC]%20Validation/"
                     title="Share on Google+"
                     aria-label="Share on Google+"
                 >
@@ -585,7 +585,7 @@
                     <a
                         class="share-option-btn"
                         target="new"
-                        href="https://www.facebook.com/sharer/sharer.php?u=http://example.com/2021/07/21/spring-MVC-Validation/"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://example.com/2021/07/21/[spring%20MVC]%20Validation/"
                         aria-label="Share on Facebook"
                     >
                         <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
@@ -598,7 +598,7 @@
                     <a
                         class="share-option-btn"
                         target="new"
-                        href="https://twitter.com/intent/tweet?text=http://example.com/2021/07/21/spring-MVC-Validation/"
+                        href="https://twitter.com/intent/tweet?text=http://example.com/2021/07/21/[spring%20MVC]%20Validation/"
                         aria-label="Share on Twitter"
                     >
                         <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
@@ -611,7 +611,7 @@
                     <a
                         class="share-option-btn"
                         target="new"
-                        href="https://plus.google.com/share?url=http://example.com/2021/07/21/spring-MVC-Validation/"
+                        href="https://plus.google.com/share?url=http://example.com/2021/07/21/[spring%20MVC]%20Validation/"
                         aria-label="Share on Google+"
                     >
                         <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
