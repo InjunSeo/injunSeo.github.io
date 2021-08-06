@@ -268,6 +268,117 @@
                     
                         <a
                             class="link-unstyled"
+                            href="/2021/08/06/%5BSQL%5D%20Constraint/"
+                            aria-label=": [SQL] Constraint"
+                        >
+                            [SQL] Constraint
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time datetime="2021-08-06T13:30:45+09:00">
+	
+		    Aug 06, 2021
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/sql/">sql</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content">
+                    <h1 id="1-Primary-key"><a href="#1-Primary-key" class="headerlink" title="1. Primary key"></a>1. Primary key</h1><h2 id="1-1-정의"><a href="#1-1-정의" class="headerlink" title="1.1. 정의"></a>1.1. 정의</h2><p>x는 primary key에 입력되는 값이다 iff<br>(1) x는 중복될 수 없다.<br>(2) x에 null이 입력될 수 없다.</p>
+<h2 id="1-2-primary-key-지정하기"><a href="#1-2-primary-key-지정하기" class="headerlink" title="1.2. primary key 지정하기"></a>1.2. primary key 지정하기</h2><h3 id="1-하나일-때"><a href="#1-하나일-때" class="headerlink" title="(1) 하나일 때"></a>(1) 하나일 때</h3><h3 id="2-두-개-이상일때"><a href="#2-두-개-이상일때" class="headerlink" title="(2) 두 개 이상일때"></a>(2) 두 개 이상일때</h3><ul>
+<li><p>prodCode와 prodId가 기본 키라고 가정하자.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> prodTbl(</span><br><span class="line">    prodCode <span class="type">char</span>(<span class="number">3</span>) <span class="keyword">not</span> <span class="keyword">null</span>,</span><br><span class="line">    prodId <span class="type">char</span>(<span class="number">4</span>) <span class="keyword">not</span> <span class="keyword">null</span>,</span><br><span class="line">    rpodDate datetime <span class="keyword">not</span> <span class="keyword">null</span>,</span><br><span class="line">    <span class="keyword">constraint</span> <span class="keyword">primary</span> key(prodCode, prodId)</span><br><span class="line">)</span><br></pre></td></tr></table></figure></li>
+<li><p>테이블을 create할때 제약조건을 설정하지 못했다면, </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Alter</span> <span class="keyword">table</span> usertbl <span class="keyword">add</span> <span class="keyword">constraint</span> <span class="keyword">primary</span> key(prodCode, prodId);</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="1-3-이름-붙이기"><a href="#1-3-이름-붙이기" class="headerlink" title="1.3. 이름 붙이기"></a>1.3. 이름 붙이기</h2><p>primary key의 이름을 붙일 수 있다.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> usertbl(</span><br><span class="line">	userId <span class="type">char</span>(<span class="number">8</span>) <span class="keyword">Not</span> <span class="keyword">null</span>,</span><br><span class="line">    name <span class="type">VARCHAR</span>(<span class="number">10</span>) <span class="keyword">not</span> <span class="keyword">null</span>,</span><br><span class="line">    addr <span class="type">char</span>(<span class="number">9</span>),</span><br><span class="line">    mDate <span class="type">date</span>,</span><br><span class="line">    <span class="keyword">constraint</span> <span class="keyword">primary</span> key PK_userTBL_userId (userId)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="2-Foreign-key-제약조건"><a href="#2-Foreign-key-제약조건" class="headerlink" title="2. Foreign key 제약조건"></a>2. Foreign key 제약조건</h1><h2 id="2-1-정의"><a href="#2-1-정의" class="headerlink" title="2.1. 정의"></a>2.1. 정의</h2><ul>
+<li>외래 키를 정의하는 테이블을 ‘외래 키 테이블’이라고 한다. 외래 키에 의해서 참조되는 테이블을 ‘기준 테이블’이라고 한다.</li>
+<li>기준 테이블의 열은 primary key 또는 uqique 조건으로 설정되어 있어야 한다.</li>
+</ul>
+<h2 id="2-2-외래-키-설정하기"><a href="#2-2-외래-키-설정하기" class="headerlink" title="2.2. 외래 키 설정하기"></a>2.2. 외래 키 설정하기</h2><ul>
+<li>foreign key도 테이블 생성 시에 설정할수 있고 생성 이후에 설정할 수 있다.<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> buytbl(</span><br><span class="line">	num <span class="type">int</span> auto_increment <span class="keyword">not</span> <span class="keyword">null</span> <span class="keyword">primary</span> key,</span><br><span class="line">    userId <span class="type">char</span>(<span class="number">8</span>) <span class="keyword">not</span> <span class="keyword">null</span>,</span><br><span class="line">    prodName <span class="type">char</span>(<span class="number">20</span>) <span class="keyword">not</span> <span class="keyword">null</span>,</span><br><span class="line">    groupName <span class="type">char</span>(<span class="number">10</span>),</span><br><span class="line">    price <span class="type">int</span> <span class="keyword">not</span> <span class="keyword">null</span>,</span><br><span class="line">    amount <span class="type">smallint</span>,</span><br><span class="line">    <span class="keyword">constraint</span> FK_userTBL_buyTBL <span class="keyword">foreign</span> key(userId) <span class="keyword">references</span> usertbl(userId)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<h2 id="2-3-Foreign-key-Option"><a href="#2-3-Foreign-key-Option" class="headerlink" title="2.3. Foreign key Option"></a>2.3. Foreign key Option</h2></li>
+<li>목적: 기준 테이블의 데이터가 변경되었을 때, 외래 키 테이블도 자동으로 적용되도록 설정해 주기 위한 기능이다.</li>
+<li>두 가지 상황이 가능하다. <ol>
+<li>기준 테이블의 데이터가 변경되면, 외래 키 테이블의 값도 변경된다.</li>
+<li>기준 테이블의 데이터가 삭제되면, 외래 키 테이블의 값도 삭제(또는 null)된다.</li>
+</ol>
+</li>
+</ul>
+<h3 id="On-Update-cascade"><a href="#On-Update-cascade" class="headerlink" title="On Update cascade"></a>On Update cascade</h3><ul>
+<li>기준 테이블의 데이터가 변경되면, 외래 키 테이블의 값도 변경해주기 위한 옵션이다.</li>
+<li>위에서 만든 테이블 buyTBL에 <code>On Update CASACADE</code>를 추가해보자.<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> buytbl <span class="keyword">drop</span> <span class="keyword">foreign</span> key FK_userTBL_buyTBL;</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> buytbl</span><br><span class="line">	<span class="keyword">add</span> <span class="keyword">constraint</span> FK_userTBL_buyTBL</span><br><span class="line">		<span class="keyword">foreign</span> key(userId) </span><br><span class="line">        <span class="keyword">references</span> usertbl(userId)</span><br><span class="line">        <span class="keyword">On</span> update cascade;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="On-Delete-cascade"><a href="#On-Delete-cascade" class="headerlink" title="On Delete cascade"></a>On Delete cascade</h3><ul>
+<li><p>두 가지 기능으로 세분화 가능하다.</p>
+<ol>
+<li>기준 테이블의 데이터가 삭제되면, 외래 키 테이블의 값도 삭제한다.</li>
+<li>기준 테이블의 데이터가 삭제되면, 외래 키 테이블의 해당 값에 null을 준다. </li>
+</ol>
+</li>
+<li><p>Case1: <code>On Delete Cascade</code></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> buytbl <span class="keyword">drop</span> <span class="keyword">foreign</span> key FK_userTBL_buyTBL;</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> buytbl</span><br><span class="line">	<span class="keyword">add</span> <span class="keyword">constraint</span> FK_userTBL_buyTBL</span><br><span class="line">		<span class="keyword">foreign</span> key(userId) </span><br><span class="line">        <span class="keyword">references</span> usertbl(userId)</span><br><span class="line">        <span class="keyword">on</span> update cascade</span><br><span class="line">        <span class="keyword">on</span> <span class="keyword">delete</span> cascade;</span><br></pre></td></tr></table></figure></li>
+<li><p>Case2: <code>on delete set null</code></p>
+</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> buytbl <span class="keyword">drop</span> <span class="keyword">foreign</span> key FK_userTBL_buyTBL;</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> buytbl</span><br><span class="line">	<span class="keyword">add</span> <span class="keyword">constraint</span> FK_userTBL_buyTBL</span><br><span class="line">		<span class="keyword">foreign</span> key(userId) </span><br><span class="line">        <span class="keyword">references</span> usertbl(userId)</span><br><span class="line">        <span class="keyword">on</span> update cascade</span><br><span class="line">        <span class="keyword">on</span> <span class="keyword">delete</span> <span class="keyword">set</span> <span class="keyword">null</span>;</span><br></pre></td></tr></table></figure>
+<p>그런데 buyTBL을 생성할 때, userId는 not null로 설정했기 때문에 <code>on delete set null</code>이 먹지 않는다. </p>
+<hr>
+<h1 id="3-Unique"><a href="#3-Unique" class="headerlink" title="3. Unique"></a>3. Unique</h1><h2 id="Definition"><a href="#Definition" class="headerlink" title="Definition"></a>Definition</h2><p>variable x가 unique 제약 조건에 설정된다. iff<br>(1) x에는 유일한 값value만이 할당될 수 있으며,<br>(2) x에는 null이 들어갈 수 있다.</p>
+<h2 id="uqique-제약-조건-설정하기"><a href="#uqique-제약-조건-설정하기" class="headerlink" title="uqique 제약 조건 설정하기"></a>uqique 제약 조건 설정하기</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> userTBL(</span><br><span class="line">	userId <span class="type">char</span>(<span class="number">15</span>) <span class="keyword">Not</span> <span class="keyword">null</span>,</span><br><span class="line">    email <span class="type">char</span>(<span class="number">30</span>) <span class="keyword">null</span>,</span><br><span class="line">	<span class="keyword">constraint</span> <span class="keyword">primary</span> key(userId),</span><br><span class="line">    <span class="keyword">constraint</span> AK_email <span class="keyword">unique</span>(email)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="4-Check-제약조건"><a href="#4-Check-제약조건" class="headerlink" title="4. Check 제약조건"></a>4. Check 제약조건</h1><h2 id="정의"><a href="#정의" class="headerlink" title="정의"></a>정의</h2><ul>
+<li>check 제약조건은 입력되는 데이터를 점검하는 기능을 한다.<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> userTBL(</span><br><span class="line">	userId <span class="type">char</span>(<span class="number">15</span>) <span class="keyword">Not</span> <span class="keyword">null</span>,</span><br><span class="line">    userName <span class="type">VARCHAR</span>(<span class="number">10</span>),</span><br><span class="line">    birthYear <span class="type">int</span> <span class="keyword">check</span> (birthYear <span class="operator">&gt;=</span> <span class="number">1900</span> <span class="keyword">And</span> birthYear <span class="operator">&lt;=</span> <span class="number">2021</span>),</span><br><span class="line">    mobile1 <span class="type">char</span>(<span class="number">3</span>),</span><br><span class="line">    mobile2 <span class="type">char</span>(<span class="number">8</span>),</span><br><span class="line">	<span class="keyword">constraint</span> <span class="keyword">primary</span> key(userId),</span><br><span class="line">    <span class="keyword">constraint</span> CK_username <span class="keyword">check</span> (userName <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">null</span>)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> usertbl</span><br><span class="line">	<span class="keyword">add</span> <span class="keyword">constraint</span> CK_mobile1</span><br><span class="line">    <span class="keyword">check</span> (mobile1 <span class="keyword">in</span> (<span class="string">&#x27;010&#x27;</span>, <span class="string">&#x27;02&#x27;</span>));</span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h1 id="5-Default"><a href="#5-Default" class="headerlink" title="5. Default"></a>5. Default</h1><h2 id="정의-1"><a href="#정의-1" class="headerlink" title="정의"></a>정의</h2><ul>
+<li>값을 입력하지 않았을 때, 기본 값을 정의해주는 기능이다.<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> userTBL(</span><br><span class="line">	userId <span class="type">char</span>(<span class="number">15</span>) <span class="keyword">Not</span> <span class="keyword">null</span> <span class="keyword">primary</span> key,</span><br><span class="line">    userName <span class="type">VARCHAR</span>(<span class="number">10</span>),</span><br><span class="line">    birthYear <span class="type">int</span> <span class="keyword">not</span> <span class="keyword">null</span> <span class="keyword">default</span> <span class="number">-1</span>,</span><br><span class="line">	addr <span class="type">char</span>(<span class="number">9</span>) <span class="keyword">not</span> <span class="keyword">null</span> <span class="keyword">default</span> <span class="string">&#x27;seoul&#x27;</span>,</span><br><span class="line">    email <span class="type">char</span>(<span class="number">30</span>) <span class="keyword">null</span>,</span><br><span class="line">    mobile1 <span class="type">char</span>(<span class="number">3</span>),</span><br><span class="line">    mobile2 <span class="type">char</span>(<span class="number">8</span>),</span><br><span class="line">    height <span class="type">smallint</span>,</span><br><span class="line">    mDate <span class="type">date</span>,</span><br><span class="line">    <span class="keyword">constraint</span> AK_email <span class="keyword">unique</span>(email)</span><br><span class="line">);</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> userTBL</span><br><span class="line">	<span class="keyword">alter</span> <span class="keyword">column</span> height <span class="keyword">set</span> <span class="keyword">default</span> <span class="number">170</span>;</span><br></pre></td></tr></table></figure></li>
+<li><code>insert into</code>로 데이터를 넣어줄 때, <code>null</code>이 아니라 <code>default</code>를 입력해줘야 한다.</li>
+</ul>
+
+                    
+                        
+
+
+                    
+                    
+                        <p>
+                            <a
+                                href="/2021/08/06/%5BSQL%5D%20Constraint/#post-footer"
+                                class="postShorten-excerpt_link link"
+                                aria-label=""
+                            >
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title">
+                    
+                        <a
+                            class="link-unstyled"
                             href="/2021/07/27/%5Bspring%20MVC%5D%20@Session/"
                             aria-label=": [spring MVC] Session"
                         >
