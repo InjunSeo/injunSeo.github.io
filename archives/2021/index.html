@@ -269,6 +269,72 @@
                     
                         <a
                             class="link-unstyled"
+                            href="/2021/08/24/%5BJPA%5D%20JPA%20%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0/"
+                            aria-label=": [JPA] Start JPA"
+                        >
+                            [JPA] Start JPA
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time datetime="2021-08-24T15:29:24+09:00">
+	
+		    Aug 24, 2021
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/JPA/">JPA</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content">
+                    <h1 id="JPA-설정"><a href="#JPA-설정" class="headerlink" title="JPA 설정"></a>JPA 설정</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span><br><span class="line">&lt;persistence version=<span class="string">&quot;2.2&quot;</span></span><br><span class="line">             xmlns=<span class="string">&quot;http://xmlns.jcp.org/xml/ns/persistence&quot;</span> xmlns:xsi=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span><br><span class="line">             xsi:schemaLocation=<span class="string">&quot;http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd&quot;</span>&gt;</span><br><span class="line">    &lt;persistence-unit name=<span class="string">&quot;hello&quot;</span>&gt;</span><br><span class="line">        &lt;properties&gt;</span><br><span class="line">            &lt;!-- 필수 속성 --&gt;</span><br><span class="line">            &lt;property name=<span class="string">&quot;javax.persistence.jdbc.driver&quot;</span> value=<span class="string">&quot;org.h2.Driver&quot;</span>/&gt;</span><br><span class="line">            &lt;property name=<span class="string">&quot;javax.persistence.jdbc.user&quot;</span> value=<span class="string">&quot;sa&quot;</span>/&gt;</span><br><span class="line">            &lt;property name=<span class="string">&quot;javax.persistence.jdbc.password&quot;</span> value=<span class="string">&quot;&quot;</span>/&gt;</span><br><span class="line">            &lt;property name=<span class="string">&quot;javax.persistence.jdbc.url&quot;</span> value=<span class="string">&quot;jdbc:h2:tcp://localhost/~/test&quot;</span>/&gt;</span><br><span class="line">            &lt;property name=<span class="string">&quot;hibernate.dialect&quot;</span> value=<span class="string">&quot;org.hibernate.dialect.H2Dialect&quot;</span>/&gt;</span><br><span class="line">            &lt;!-- 옵션 --&gt;</span><br><span class="line">            &lt;property name=<span class="string">&quot;hibernate.show_sql&quot;</span> value=<span class="string">&quot;true&quot;</span>/&gt;</span><br><span class="line">            &lt;property name=<span class="string">&quot;hibernate.format_sql&quot;</span> value=<span class="string">&quot;true&quot;</span>/&gt;</span><br><span class="line">            &lt;property name=<span class="string">&quot;hibernate.use_sql_comments&quot;</span> value=<span class="string">&quot;true&quot;</span>/&gt;</span><br><span class="line">            &lt;!--&lt;property name=<span class="string">&quot;hibernate.hbm2ddl.auto&quot;</span> value=<span class="string">&quot;create&quot;</span> /&gt;--&gt;</span><br><span class="line">        &lt;/properties&gt;</span><br><span class="line">    &lt;/persistence-unit&gt;</span><br><span class="line">&lt;/persistence&gt;</span><br></pre></td></tr></table></figure>
+<h1 id="JPA-동작-확인"><a href="#JPA-동작-확인" class="headerlink" title="JPA 동작 확인"></a>JPA 동작 확인</h1><h2 id="객체와-table-생성-매핑하기"><a href="#객체와-table-생성-매핑하기" class="headerlink" title="객체와 table 생성, 매핑하기"></a>객체와 table 생성, 매핑하기</h2><ul>
+<li>테이블 만들고 객체 만들기<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Member</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="comment">//Getter, Setter</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="간단-기능-회원-저장-찾기-수정"><a href="#간단-기능-회원-저장-찾기-수정" class="headerlink" title="간단 기능: 회원 저장, 찾기, 수정"></a>간단 기능: 회원 저장, 찾기, 수정</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JpaMain</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        EntityManagerFactory emf = Persistence.createEntityManagerFactory(<span class="string">&quot;hello&quot;</span>);</span><br><span class="line">        EntityManager em = emf.createEntityManager();</span><br><span class="line">        EntityTransaction tx = em.getTransaction();</span><br><span class="line">        tx.begin();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">/** save member */</span></span><br><span class="line">            Member member = <span class="keyword">new</span> Member();</span><br><span class="line">            member.setId(<span class="number">1L</span>);</span><br><span class="line">            member.setName(<span class="string">&quot;memberA&quot;</span>);</span><br><span class="line"></span><br><span class="line">            em.persist(member);</span><br><span class="line">            </span><br><span class="line">            <span class="comment">/** find member */</span></span><br><span class="line">            Member findMember = em.find(Member.class, <span class="number">1L</span>);</span><br><span class="line">            System.out.println(<span class="string">&quot;findMember = &quot;</span> + findMember.getId() + <span class="string">&quot;, &quot;</span> + findMember.getName());</span><br><span class="line">            </span><br><span class="line">            <span class="comment">/** edit member */</span></span><br><span class="line">            findMember.setName(<span class="string">&quot;seomoon&quot;</span>);</span><br><span class="line">            </span><br><span class="line">            tx.commit;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            tx.rollback();</span><br><span class="line">        &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">            em.close();</span><br><span class="line">        &#125;</span><br><span class="line">        emf.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>앞서 만들어놓은 “hello”라는 이름의 설정 정보를 읽어와서 만든다.</li>
+<li><code>EntityManagerFactory</code>는 하나만 생성해서 애플리케이션 전체에서 공유한다.</li>
+<li><code>EntityManager</code>는 쓰레드 간 공유하지 않는다. </li>
+<li>JPA의 모든 데이터 변경은 트랜잭션 안에서 실행한다.</li>
+</ul>
+<h2 id=""><a href="#" class="headerlink" title=""></a></h2>
+                    
+                        
+
+
+                    
+                    
+                        <p>
+                            <a
+                                href="/2021/08/24/%5BJPA%5D%20JPA%20%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0/#post-footer"
+                                class="postShorten-excerpt_link link"
+                                aria-label=""
+                            >
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title">
+                    
+                        <a
+                            class="link-unstyled"
                             href="/2021/08/14/%5Bspring%20MVC%5D%20Exception/"
                             aria-label=": [spring MVC] Exception"
                         >
@@ -1179,75 +1245,22 @@
         
     </article>
     
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title">
-                    
-                        <a
-                            class="link-unstyled"
-                            href="/2021/07/14/hello-world/"
-                            aria-label=": Hello World"
-                        >
-                            Hello World
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time datetime="2021-07-14T14:10:06+09:00">
-	
-		    Jul 14, 2021
-    	
-    </time>
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content">
-                    <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-
-                    
-                        
-
-
-                    
-                    
-                        <p>
-                            <a
-                                href="/2021/07/14/hello-world/#post-footer"
-                                class="postShorten-excerpt_link link"
-                                aria-label=""
-                            >
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
     <div class="pagination-bar">
     <ul class="pagination">
         
         
-        <li class="pagination-number">page 1 of 1</li>
+          <li class="pagination-next">
+            <a
+                class="btn btn--default btn--small"
+                href="/archives/2021/page/2/"
+                aria-label="OLDER POSTS"
+            >
+              <span>OLDER POSTS</span>
+              <i class="fa fa-angle-right text-base icon-ml"></i>
+            </a>
+          </li>
+        
+        <li class="pagination-number">page 1 of 2</li>
     </ul>
 </div>
 
