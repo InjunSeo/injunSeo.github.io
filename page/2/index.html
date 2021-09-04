@@ -268,6 +268,95 @@
                     
                         <a
                             class="link-unstyled"
+                            href="/2021/07/14/%5Bspring%20MVC%5D%20@RequestMapping/"
+                            aria-label=": [spring MVC] @RequestMapping"
+                        >
+                            [spring MVC] @RequestMapping
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time datetime="2021-07-14T15:09:37+09:00">
+	
+		    Jul 14, 2021
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/spring/">spring</a>, <a class="category-link" href="/categories/spring/spring-MVC/">spring MVC</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content">
+                    <h1 id="기본-요청"><a href="#기본-요청" class="headerlink" title="기본 요청"></a>기본 요청</h1><ul>
+<li>@RequestMapping<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MappingController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping(&#123;&quot;/hello-basic&quot;, &quot;/hello&quot;&#125;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">helloBasic</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        log.info(<span class="string">&quot;hello-Basic&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;ok&quot;</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></li>
+<li>“/hello-basic” 또는 “/hello” url 호출 시, 해당 메서드가 실행되도록 매핑해준다.</li>
+<li>Http 메서드를 모두 허용해준다. GET, POST, PUT 등</li>
+</ul>
+<h1 id="HTTP-메서드-매핑"><a href="#HTTP-메서드-매핑" class="headerlink" title="HTTP 메서드 매핑"></a>HTTP 메서드 매핑</h1><ul>
+<li>특정 HTTP 메서드 요청만 허용해준다.<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@GetMapping(&quot;/mapping-get&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">mappingGet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">log.info(<span class="string">&quot;mappingGet&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;ok&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>@PostMapping, @PutMapping 등</li>
+</ul>
+<h1 id="경로-변수-사용"><a href="#경로-변수-사용" class="headerlink" title="경로 변수 사용"></a>경로 변수 사용</h1><ul>
+<li><p>@PathVariable</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@GetMapping(&quot;/mapping/&#123;userId&#125;&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">mappingPath</span><span class="params">(<span class="meta">@PathVariable(&quot;userId&quot;)</span> String data)</span> </span>&#123;</span><br><span class="line">log.info(<span class="string">&quot;mappingPath userId=&#123;&#125;&quot;</span>, data);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;ok&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>특정 parameter 조건 매핑</p>
+<ul>
+<li><p>params=”mode=debug”,</p>
+</li>
+<li><p>pramas = “!mode”</p>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@GetMapping(value = &quot;/mapping-param&quot;, params = &quot;mode=debug&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">mappingParam</span><span class="params">()</span> </span>&#123;</span><br><span class="line">log.info(<span class="string">&quot;mappingParam&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;ok&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* params에 &quot;mode=debug&quot; 포함되어야 요청을 받아들인다.</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>그 밖의 조건들<ol>
+<li>특정 헤더 조건 매핑: header=”..”</li>
+<li>미디어타입 조건 매핑: consumes=”..”, produces=”..”</li>
+</ol>
+</li>
+</ul>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><ul>
+<li>김영한(2021-03-21), Spring MVC 1편, Ch6 S13 ~ S14</li>
+</ul>
+
+                    
+                        
+
+
+                    
+                    
+                        <p>
+                            <a
+                                href="/2021/07/14/%5Bspring%20MVC%5D%20@RequestMapping/#post-footer"
+                                class="postShorten-excerpt_link link"
+                                aria-label=""
+                            >
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title">
+                    
+                        <a
+                            class="link-unstyled"
                             href="/2021/07/14/hello-world/"
                             aria-label=": Hello World"
                         >
